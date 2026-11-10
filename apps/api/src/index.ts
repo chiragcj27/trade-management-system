@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import mongoose from "mongoose";
 import { DemoPersona, connectDb, disconnectDb } from "@repo/db";
 import { createApp } from "./create-app.js";
 import { seedDemo } from "./seed.js";
@@ -22,7 +23,19 @@ try {
   process.exit(1);
 }
 
-if (demo && (await DemoPersona.countDocuments()) === 0) {
+// Several serverless instances can start at once; only the one that claims the lock seeds,
+// otherwise each seed wipes the others' records halfway through.
+async function claimDemoSeed(): Promise<boolean> {
+  try {
+    await mongoose.connection.collection<{ _id: string }>("locks").insertOne({ _id: "demo-seed" });
+    return true;
+  } catch (error) {
+    if ((error as { code?: number }).code === 11000) return false;
+    throw error;
+  }
+}
+
+if (demo && (await DemoPersona.countDocuments()) === 0 && (await claimDemoSeed())) {
   console.log("Loading demo data...");
   await seedDemo();
 }

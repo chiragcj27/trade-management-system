@@ -31,9 +31,11 @@ export function createApp(options: { demo: boolean }): Express {
     next();
   });
   demo.get("/personas", async (_req, res) => {
-    const personas = await DemoPersona.find().sort({ order: 1 }).populate("staffId", "name phone").lean();
+    const found = await DemoPersona.find().sort({ order: 1 }).populate("staffId", "name phone").lean();
+    // A persona whose staff record is gone is unusable; report the demo as not loaded so it can be reset.
+    const personas = found.filter((p) => p.staffId != null);
     res.json({
-      seeded: personas.length > 0,
+      seeded: personas.length > 0 && personas.length === found.length,
       personas: personas.map((p) => ({ ...p, home: ROLE_HOME[p.role as Role] })),
     });
   });

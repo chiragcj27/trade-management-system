@@ -36,7 +36,7 @@ export default function RolePicker() {
   useEffect(() => {
     const id = getStaffId();
     if (id && data) {
-      const persona = data.personas.find((p) => p.staffId._id === id);
+      const persona = data.personas.find((p) => p.staffId?._id === id);
       if (persona) router.replace(persona.home);
       else setStaffId(null);
     }
@@ -66,7 +66,7 @@ export default function RolePicker() {
         )}
         {data?.seeded &&
           ROLES.map((role) => {
-            const people = data.personas.filter((p) => p.role === role);
+            const people = data.personas.filter((p) => p.role === role && p.staffId);
             if (people.length === 0) return null;
             return (
               <section className="stack" key={role}>
