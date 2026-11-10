@@ -1,4 +1,5 @@
 import "dotenv/config";
+import express from "express";
 import { DemoPersona, connectDb, disconnectDb } from "@repo/db";
 import { createApp } from "./create-app.js";
 import { seedDemo } from "./seed.js";
@@ -26,7 +27,9 @@ if (demo && (await DemoPersona.countDocuments()) === 0) {
   await seedDemo();
 }
 
-const server = createApp({ demo }).listen(port, () => {
+const app = express();
+app.use(createApp({ demo }));
+const server = app.listen(port, () => {
   console.log(`API listening on http://localhost:${port}`);
 });
 
