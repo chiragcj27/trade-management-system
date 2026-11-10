@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { DemoPersona, connectDb, disconnectDb } from "@repo/db";
-import { createApp } from "./app.js";
+import { createApp } from "./create-app.js";
 import { seedDemo } from "./seed.js";
 
 const port = Number(process.env.PORT ?? 4000);

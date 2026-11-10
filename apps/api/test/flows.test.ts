@@ -4,7 +4,7 @@ import { after, before, beforeEach, describe, it } from "node:test";
 import { connectDb, disconnectDb } from "@repo/db";
 import { allocateOldestFirst, buildUpiUrl } from "@repo/shared";
 import { MongoMemoryReplSet } from "mongodb-memory-server";
-import { createApp } from "../src/app.js";
+import { createApp } from "../src/create-app.js";
 import { seedDemo } from "../src/seed.js";
 
 let mongo: MongoMemoryReplSet;
