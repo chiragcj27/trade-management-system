@@ -349,7 +349,7 @@ field.get("/visits/:id", async (req, res) => {
     getSettings(),
     Order.findOne({ shopId: visit.shopId, visitId: { $ne: visit._id } }).sort({ createdAt: -1 }).lean(),
   ]);
-  const lastQty = new Map((lastOrder?.lines ?? []).map((l) => [String(l.productId), l.quantity]));
+  const lastQty = new Map((lastOrder?.lines ?? []).map((l) => [String(l.productId), l.quantity] as const));
   res.json({
     visit: visit.toObject(),
     runStatus: run.status,
